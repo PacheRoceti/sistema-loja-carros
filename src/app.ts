@@ -1,20 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 
+import carRoutes from './routes/car.routes';
+
 const app = express();
 
+// Middlewares globais
 app.use(cors());
 app.use(express.json());
 
+
+// Rotas
 app.get('/health', (req, res) => {
   return res.json({ status: 'API rodando' });
 });
 
+app.use('/cars', carRoutes);
+
+// Export
 export { app };
-
-import { prisma } from './config/prisma';
-
-app.get('/test-db', async (req, res) => {
-  const cars = await prisma.cars.findMany();
-  return res.json(cars);
-});
