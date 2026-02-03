@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
-},
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/PacheRoceti/sistema-loja-carros.git"
@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/PacheRoceti/sistema-loja-carros#readme",
   "dependencies": {
+    "@prisma/client": "^6.19.2",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "prisma": "^6.19.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
@@ -29,5 +31,4 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
-  
 }

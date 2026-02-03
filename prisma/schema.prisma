@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model car_images {
+  id         Int       @id @default(autoincrement())
+  car_id     Int
+  image_url  String    @db.VarChar(255)
+  is_cover   Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  cars       cars      @relation(fields: [car_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_car_images_car")
+
+  @@index([car_id], map: "fk_car_images_car")
+}
+
+model cars {
+  id          Int          @id @default(autoincrement())
+  name        String       @db.VarChar(150)
+  brand       String       @db.VarChar(100)
+  model       String       @db.VarChar(100)
+  year        Int
+  price       Decimal      @db.Decimal(10, 2)
+  km          Int
+  color       String?      @db.VarChar(50)
+  fuel        cars_fuel
+  description String?      @db.Text
+  is_sold     Boolean?     @default(false)
+  is_featured Boolean?     @default(false)
+  created_at  DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at  DateTime?    @default(now()) @db.Timestamp(0)
+  car_images  car_images[]
+
+  @@index([brand], map: "idx_brand")
+  @@index([is_sold], map: "idx_is_sold")
+  @@index([km], map: "idx_km")
+  @@index([price], map: "idx_price")
+  @@index([year], map: "idx_year")
+}
+
+model dealership_info {
+  id              Int     @id @default(autoincrement())
+  name            String? @db.VarChar(150)
+  description     String? @db.Text
+  address         String? @db.VarChar(255)
+  whatsapp        String? @db.VarChar(30)
+  email           String? @db.VarChar(150)
+  phone           String? @db.VarChar(30)
+  google_maps_url String? @db.VarChar(255)
+}
+
+model users {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  email      String    @unique(map: "email") @db.VarChar(150)
+  password   String    @db.VarChar(255)
+  role       String?   @default("admin") @db.VarChar(20)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @default(now()) @db.Timestamp(0)
+}
+
+enum cars_fuel {
+  Gasolina
+  Flex
+  Diesel
+  El_trico @map("Elétrico")
+}

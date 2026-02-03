@@ -11,3 +11,10 @@ app.get('/health', (req, res) => {
 });
 
 export { app };
+
+import { prisma } from './config/prisma';
+
+app.get('/test-db', async (req, res) => {
+  const cars = await prisma.cars.findMany();
+  return res.json(cars);
+});
