@@ -7,65 +7,68 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model car_images {
-  id         Int       @id @default(autoincrement())
-  car_id     Int
-  image_url  String    @db.VarChar(255)
-  is_cover   Boolean?  @default(false)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
-  cars       cars      @relation(fields: [car_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_car_images_car")
+model CarImage {
+  id        Int      @id @default(autoincrement())
+  imageUrl  String   @map("image_url")
+  isCover   Boolean  @default(false) @map("is_cover")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@index([car_id], map: "fk_car_images_car")
+  carId Int @map("car_id")
+  car   Car @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@map("car_images")
 }
 
-model cars {
-  id          Int          @id @default(autoincrement())
-  name        String       @db.VarChar(150)
-  brand       String       @db.VarChar(100)
-  model       String       @db.VarChar(100)
+model Car {
+  id          Int      @id @default(autoincrement())
+  name        String
+  brand       String
+  model       String
   year        Int
-  price       Decimal      @db.Decimal(10, 2)
+  price       Decimal
   km          Int
-  color       String?      @db.VarChar(50)
-  fuel        cars_fuel
-  description String?      @db.Text
-  is_sold     Boolean?     @default(false)
-  is_featured Boolean?     @default(false)
-  created_at  DateTime?    @default(now()) @db.Timestamp(0)
-  updated_at  DateTime?    @default(now()) @db.Timestamp(0)
-  car_images  car_images[]
+  color       String?
+  fuel        Fuel
+  description String?
+  isSold      Boolean  @default(false) @map("is_sold")
+  isFeatured  Boolean  @default(false) @map("is_featured")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  @@index([brand], map: "idx_brand")
-  @@index([is_sold], map: "idx_is_sold")
-  @@index([km], map: "idx_km")
-  @@index([price], map: "idx_price")
-  @@index([year], map: "idx_year")
+  images CarImage[]
+
+  @@map("cars")
 }
 
-model dealership_info {
-  id              Int     @id @default(autoincrement())
-  name            String? @db.VarChar(150)
-  description     String? @db.Text
-  address         String? @db.VarChar(255)
-  whatsapp        String? @db.VarChar(30)
-  email           String? @db.VarChar(150)
-  phone           String? @db.VarChar(30)
-  google_maps_url String? @db.VarChar(255)
+model DealershipInfo {
+  id            Int     @id @default(autoincrement())
+  name          String?
+  description   String?
+  address       String?
+  whatsapp      String?
+  email         String?
+  phone         String?
+  googleMapsUrl String? @map("google_maps_url")
+
+  @@map("dealership_info")
 }
 
-model users {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(100)
-  email      String    @unique(map: "email") @db.VarChar(150)
-  password   String    @db.VarChar(255)
-  role       String?   @default("admin") @db.VarChar(20)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
-  updated_at DateTime? @default(now()) @db.Timestamp(0)
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
 }
 
-enum cars_fuel {
+enum Fuel {
   Gasolina
   Flex
   Diesel
-  El_trico @map("Elétrico")
+  Eletrico @map("Elétrico")
+  Hibrido  @map("Híbrido")
 }
