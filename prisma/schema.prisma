@@ -12,15 +12,15 @@ model CarImage {
   imageUrl  String   @map("image_url")
   isCover   Boolean  @default(false) @map("is_cover")
   createdAt DateTime @default(now()) @map("created_at")
+  carId     Int      @map("car_id")
+  car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
 
-  carId Int @map("car_id")
-  car   Car @relation(fields: [carId], references: [id], onDelete: Cascade)
-
+  @@index([carId], map: "car_images_car_id_fkey")
   @@map("car_images")
 }
 
 model Car {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   brand       String
   model       String
@@ -30,12 +30,11 @@ model Car {
   color       String?
   fuel        Fuel
   description String?
-  isSold      Boolean  @default(false) @map("is_sold")
-  isFeatured  Boolean  @default(false) @map("is_featured")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  images CarImage[]
+  isSold      Boolean    @default(false) @map("is_sold")
+  isFeatured  Boolean    @default(false) @map("is_featured")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  images      CarImage[]
 
   @@map("cars")
 }
