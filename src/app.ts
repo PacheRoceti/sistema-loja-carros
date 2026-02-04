@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.routes';
 
 import carRoutes from './routes/car.routes';
 
@@ -22,6 +24,9 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/cars', carRoutes);
+
+app.use('/login', authRoutes);
+app.use('/users', userRoutes);
 
 // Export
 export { app };
