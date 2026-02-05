@@ -1,4 +1,5 @@
 import { prisma } from '../config/prisma';
+import { CarListResponseDTO } from '../dtos/car-response.dto';
 import { CreateCarDTO } from '../dtos/create-car.dto';
 import { AppError } from '../errors/AppError';
 
@@ -7,11 +8,28 @@ class CarService {
     return prisma.car.create({ data });
   }
 
-  async list() {
-    return prisma.car.findMany({
+  async list(): Promise<CarListResponseDTO[]> {
+    const cars = await prisma.car.findMany({
       where: { isSold: false },
-      include: { images: true },
+      include: {
+        images: {
+          where: { isCover: true },
+          take: 1,
+        },
+      },
     });
+
+    return cars.map((car) => ({
+      id: car.id,
+      name: car.name,
+      brand: car.brand,
+      model: car.model,
+      year: car.year,
+      price: car.price,
+      km: car.km,
+      fuel: car.fuel,
+      coverImage: car.images[0]?.imageUrl || null,
+    }));
   }
 
   async findById(id: number) {
