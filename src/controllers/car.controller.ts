@@ -10,8 +10,22 @@ class CarController {
 
   async list(req: Request, res: Response) {
     const carService = new CarService();
-    const cars = await carService.list();
-    return res.json(cars);
+
+    const result = await carService.list({
+      brand: req.query.brand as string,
+      fuel: req.query.fuel as any,
+      year: req.query.year ? Number(req.query.year) : undefined,
+      minPrice: req.query.minPrice
+        ? Number(req.query.minPrice)
+        : undefined,
+      maxPrice: req.query.maxPrice
+        ? Number(req.query.maxPrice)
+        : undefined,
+      page: req.query.page ? Number(req.query.page) : 1,
+      limit: req.query.limit ? Number(req.query.limit) : 10,
+    });
+
+    return res.json(result);
   }
 
   async findById(req: Request, res: Response) {

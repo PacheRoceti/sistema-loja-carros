@@ -1,6 +1,9 @@
 import { prisma } from '../config/prisma';
 import { CarListResponseDTO } from '../dtos/car-response.dto';
 import { CreateCarDTO } from '../dtos/create-car.dto';
+import { CarFilterDTO } from '../dtos/car-filter.dto';
+import { PaginationResponseDTO } from '../dtos/pagination-response.dto';
+import { getPagination } from '../utils/pagination';
 import { AppError } from '../errors/AppError';
 
 class CarService {
@@ -8,18 +11,52 @@ class CarService {
     return prisma.car.create({ data });
   }
 
-  async list(): Promise<CarListResponseDTO[]> {
-    const cars = await prisma.car.findMany({
-      where: { isSold: false },
-      include: {
-        images: {
-          where: { isCover: true },
-          take: 1,
-        },
-      },
-    });
+  async list(
+    filters: CarFilterDTO
+  ): Promise<PaginationResponseDTO<CarListResponseDTO>> {
+    const {
+      brand,
+      fuel,
+      year,
+      minPrice,
+      maxPrice,
+      page = 1,
+      limit = 10,
+    } = filters;
 
-    return cars.map((car) => ({
+    const { skip, take } = getPagination(page, limit);
+
+    const where: any = {
+      isSold: false,
+    };
+
+    if (brand) where.brand = brand;
+    if (fuel) where.fuel = fuel;
+    if (year) where.year = year;
+
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price.gte = minPrice;
+      if (maxPrice) where.price.lte = maxPrice;
+    }
+
+    const [cars, total] = await Promise.all([
+      prisma.car.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          images: {
+            where: { isCover: true },
+            take: 1,
+          },
+        },
+      }),
+      prisma.car.count({ where }),
+    ]);
+
+    const data: CarListResponseDTO[] = cars.map((car) => ({
       id: car.id,
       name: car.name,
       brand: car.brand,
@@ -30,6 +67,14 @@ class CarService {
       fuel: car.fuel,
       coverImage: car.images[0]?.imageUrl || null,
     }));
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findById(id: number) {
