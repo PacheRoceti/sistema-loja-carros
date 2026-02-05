@@ -1,22 +1,35 @@
 import { Router } from 'express';
-import {
-  createCar,
-  listCars,
-  getCar,
-  updateCar,
-  deleteCar,
-} from '../controllers/car.controller';
+import { CarController } from '../controllers/car.controller';
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { ensureAdmin } from '../middlewares/ensureAdmin';
 
-import carImageRoutes from './car-image.routes';
+const carRoutes = Router();
+const carController = new CarController();
 
-const router = Router();
+// públicas
+carRoutes.get('/', carController.list);
+carRoutes.get('/:id', carController.findById);
 
-router.post('/', createCar);
-router.get('/', listCars);
-router.get('/:id', getCar);
-router.put('/:id', updateCar);
-router.delete('/:id', deleteCar);
+// protegidas
+carRoutes.post(
+  '/',
+  ensureAuthenticated,
+  ensureAdmin,
+  carController.create
+);
 
-router.use('/', carImageRoutes);
+carRoutes.put(
+  '/:id',
+  ensureAuthenticated,
+  ensureAdmin,
+  carController.update
+);
 
-export default router;
+carRoutes.delete(
+  '/:id',
+  ensureAuthenticated,
+  ensureAdmin,
+  carController.delete
+);
+
+export default carRoutes;

@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
-
 import carRoutes from './routes/car.routes';
+import carImageRoutes from './routes/car-image.routes';
 
 const app = express();
 
@@ -17,16 +18,15 @@ app.use(
   express.static(path.resolve(__dirname, '..', 'uploads'))
 );
 
-
 // Rotas
 app.get('/health', (req, res) => {
   return res.json({ status: 'API rodando' });
 });
 
 app.use('/cars', carRoutes);
+app.use('/cars/images', carImageRoutes);
 
 app.use('/login', authRoutes);
 app.use('/users', userRoutes);
 
-// Export
 export { app };

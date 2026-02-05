@@ -1,9 +1,18 @@
 import { Router } from 'express';
+import { CarImageController } from '../controllers/car-image.controller';
 import { upload } from '../middlewares/upload.middleware';
-import { uploadCarImage } from '../controllers/car-image.controller';
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
+import { ensureAdmin } from '../middlewares/ensureAdmin';
 
-const router = Router();
+const carImageRoutes = Router();
+const carImageController = new CarImageController();
 
-router.post('/:id/images', upload.single('image'), uploadCarImage);
+carImageRoutes.post(
+  '/:carId',
+  ensureAuthenticated,
+  ensureAdmin,
+  upload.single('image'),
+  carImageController.upload
+);
 
-export default router;
+export default carImageRoutes;

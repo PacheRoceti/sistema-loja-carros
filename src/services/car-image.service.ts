@@ -34,4 +34,4 @@ class CarImageService {
   }
 }
 
-export const carImageService = new CarImageService();
+export { CarImageService };

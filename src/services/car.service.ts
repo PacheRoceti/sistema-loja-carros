@@ -7,7 +7,7 @@ class CarService {
     return prisma.car.create({ data });
   }
 
-  async findAll() {
+  async list() {
     return prisma.car.findMany({
       where: { isSold: false },
       include: { images: true },
@@ -45,4 +45,4 @@ class CarService {
   }
 }
 
-export const carService = new CarService();
+export { CarService };
