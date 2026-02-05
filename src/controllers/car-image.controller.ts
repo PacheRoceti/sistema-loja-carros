@@ -9,16 +9,20 @@ class CarImageController {
       return res.status(400).json({ error: 'Imagem não enviada' });
     }
 
+    const isCover =
+      req.body.isCover === 'true' || req.body.isCover === true;
+
     const imageUrl = `uploads/cars/${req.file.filename}`;
 
     const service = new CarImageService();
 
-    const result = await service.create({
+    const image = await service.create({
       carId,
       imageUrl,
+      isCover,
     });
 
-    return res.status(201).json(result);
+    return res.status(201).json(image);
   }
 }
 

@@ -1,11 +1,6 @@
 import { prisma } from '../config/prisma';
 import { AppError } from '../errors/AppError';
-
-interface CreateCarImageDTO {
-  carId: number;
-  imageUrl: string;
-  isCover?: boolean;
-}
+import { CreateCarImageDTO } from '../dtos/create-car-image.dto';
 
 class CarImageService {
   async create({ carId, imageUrl, isCover = false }: CreateCarImageDTO) {
