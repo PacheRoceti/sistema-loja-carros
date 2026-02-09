@@ -5,6 +5,7 @@ import { CarFilterDTO } from '../dtos/car-filter.dto';
 import { PaginationResponseDTO } from '../dtos/pagination-response.dto';
 import { getPagination } from '../utils/pagination';
 import { AppError } from '../errors/AppError';
+import { MarkCarSoldDTO } from '../dtos/mark-car-sold.dto';
 
 class CarService {
   async create(data: CreateCarDTO) {
@@ -106,6 +107,19 @@ class CarService {
       where: { id },
     });
   }
+
+  async markAsSold({ carId }: MarkCarSoldDTO) {
+  const car = await this.findById(carId);
+
+  if (car.isSold) {
+    throw new AppError('Carro já está vendido', 400);
+  }
+
+  await prisma.car.update({
+    where: { id: carId },
+    data: { isSold: true },
+  });
+}
 }
 
 export { CarService };

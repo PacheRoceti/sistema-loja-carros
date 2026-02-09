@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { CarService } from '../services/car.service';
+import { Request, Response } from "express";
+import { CarService } from "../services/car.service";
 
 class CarController {
   async create(req: Request, res: Response) {
@@ -15,12 +15,8 @@ class CarController {
       brand: req.query.brand as string,
       fuel: req.query.fuel as any,
       year: req.query.year ? Number(req.query.year) : undefined,
-      minPrice: req.query.minPrice
-        ? Number(req.query.minPrice)
-        : undefined,
-      maxPrice: req.query.maxPrice
-        ? Number(req.query.maxPrice)
-        : undefined,
+      minPrice: req.query.minPrice ? Number(req.query.minPrice) : undefined,
+      maxPrice: req.query.maxPrice ? Number(req.query.maxPrice) : undefined,
       page: req.query.page ? Number(req.query.page) : 1,
       limit: req.query.limit ? Number(req.query.limit) : 10,
     });
@@ -36,10 +32,7 @@ class CarController {
 
   async update(req: Request, res: Response) {
     const carService = new CarService();
-    const car = await carService.update(
-      Number(req.params.id),
-      req.body
-    );
+    const car = await carService.update(Number(req.params.id), req.body);
     return res.json(car);
   }
 
@@ -47,6 +40,18 @@ class CarController {
     const carService = new CarService();
     await carService.delete(Number(req.params.id));
     return res.status(204).send();
+  }
+
+  async markAsSold(req: Request, res: Response) {
+    const carService = new CarService();
+
+    await carService.markAsSold({
+      carId: Number(req.params.id),
+    });
+
+    return res.status(200).json({
+      message: "Carro marcado como vendido com sucesso",
+    });
   }
 }
 

@@ -32,4 +32,11 @@ carRoutes.delete(
   carController.delete
 );
 
+carRoutes.patch(
+  '/:id/sold',
+  ensureAuthenticated,
+  ensureAdmin,
+  carController.markAsSold
+);
+
 export default carRoutes;
