@@ -1,11 +1,11 @@
-import { prisma } from '../config/prisma';
-import { CarListResponseDTO } from '../dtos/car-response.dto';
-import { CreateCarDTO } from '../dtos/create-car.dto';
-import { CarFilterDTO } from '../dtos/car-filter.dto';
-import { PaginationResponseDTO } from '../dtos/pagination-response.dto';
-import { getPagination } from '../utils/pagination';
-import { AppError } from '../errors/AppError';
-import { MarkCarSoldDTO } from '../dtos/mark-car-sold.dto';
+import { prisma } from "../config/prisma";
+import { CarListResponseDTO } from "../dtos/car-response.dto";
+import { CreateCarDTO } from "../dtos/create-car.dto";
+import { CarFilterDTO } from "../dtos/car-filter.dto";
+import { PaginationResponseDTO } from "../dtos/pagination-response.dto";
+import { getPagination } from "../utils/pagination";
+import { AppError } from "../errors/AppError";
+import { MarkCarSoldDTO } from "../dtos/mark-car-sold.dto";
 
 class CarService {
   async create(data: CreateCarDTO) {
@@ -13,7 +13,7 @@ class CarService {
   }
 
   async list(
-    filters: CarFilterDTO
+    filters: CarFilterDTO,
   ): Promise<PaginationResponseDTO<CarListResponseDTO>> {
     const {
       brand,
@@ -46,7 +46,7 @@ class CarService {
         where,
         skip,
         take,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           images: {
             where: { isCover: true },
@@ -85,7 +85,7 @@ class CarService {
     });
 
     if (!car) {
-      throw new AppError('Carro não encontrado', 404);
+      throw new AppError("Carro não encontrado", 404);
     }
 
     return car;
@@ -109,17 +109,41 @@ class CarService {
   }
 
   async markAsSold({ carId }: MarkCarSoldDTO) {
-  const car = await this.findById(carId);
+    const car = await this.findById(carId);
 
-  if (car.isSold) {
-    throw new AppError('Carro já está vendido', 400);
+    if (car.isSold) {
+      throw new AppError("Carro já está vendido", 400);
+    }
+
+    return prisma.car.update({
+      where: { id: carId },
+      data: {
+        isSold: true,
+        soldAt: new Date(),
+      },
+    });
   }
 
-  await prisma.car.update({
-    where: { id: carId },
-    data: { isSold: true },
-  });
-}
+  async listSoldCars() {
+    const cars = await prisma.car.findMany({
+      where: {
+        isSold: true,
+      },
+      orderBy: {
+        soldAt: "desc",
+      },
+    });
+
+    return cars.map((car) => ({
+      id: car.id,
+      name: car.name,
+      brand: car.brand,
+      model: car.model,
+      year: car.year,
+      price: car.price,
+      soldAt: car.soldAt!,
+    }));
+  }
 }
 
 export { CarService };

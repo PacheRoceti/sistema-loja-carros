@@ -53,6 +53,12 @@ class CarController {
       message: "Carro marcado como vendido com sucesso",
     });
   }
+
+  async listSoldCars(req: Request, res: Response) {
+    const carService = new CarService();
+    const cars = await carService.listSoldCars();
+    return res.json(cars);
+  }
 }
 
 export { CarController };

@@ -31,6 +31,7 @@ model Car {
   fuel        Fuel
   description String?
   isSold      Boolean    @default(false) @map("is_sold")
+  soldAt      DateTime?
   isFeatured  Boolean    @default(false) @map("is_featured")
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime   @updatedAt @map("updated_at")

@@ -10,6 +10,14 @@ const carController = new CarController();
 carRoutes.get('/', carController.list);
 carRoutes.get('/:id', carController.findById);
 
+// admin
+carRoutes.get(
+  '/admin/sold',
+  ensureAuthenticated,
+  ensureAdmin,
+  carController.listSoldCars
+);
+
 // protegidas
 carRoutes.post(
   '/',
