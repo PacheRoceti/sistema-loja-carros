@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import carRoutes from './routes/car.routes';
 import carImageRoutes from './routes/car-image.routes';
+import dashboardRoutes from './routes/dashboard.routes';
 
 const app = express();
 
@@ -28,5 +29,6 @@ app.use('/cars/images', carImageRoutes);
 
 app.use('/login', authRoutes);
 app.use('/users', userRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 export { app };
