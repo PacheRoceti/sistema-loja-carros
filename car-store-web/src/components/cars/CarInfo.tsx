@@ -14,26 +14,35 @@ export function CarInfo({
   description,
 }: CarInfoProps) {
   return (
-    <div className="space-y-4">
-      {/* Marca e ano */}
-      <p className="text-sm uppercase tracking-wide text-neutral-500">
+    <section className="space-y-6">
+      {/* Marca + ano */}
+      <p className="text-xs uppercase tracking-widest text-neutral-500">
         {brand} • {year}
       </p>
 
       {/* Nome do carro */}
-      <h1 className="text-3xl font-semibold leading-tight">{name}</h1>
+      <h1 className="text-4xl font-semibold leading-tight text-neutral-900">
+        {name}
+      </h1>
 
       {/* Preço */}
-      <p className="text-2xl font-bold text-neutral-900">
-        R$ {price?.toLocaleString("pt-BR") ?? "—"}
-      </p>
+      <div className="pt-2">
+        <p className="text-sm text-neutral-500">Preço</p>
+        <p className="text-3xl font-bold text-neutral-900">
+          {price
+            ? `R$ ${price.toLocaleString('pt-BR')}`
+            : 'Sob consulta'}
+        </p>
+      </div>
 
       {/* Descrição */}
       {description && (
-        <p className="pt-4 text-base leading-relaxed text-neutral-600">
-          {description}
-        </p>
+        <div className="pt-6 border-t border-neutral-200">
+          <p className="text-base leading-relaxed text-neutral-600">
+            {description}
+          </p>
+        </div>
       )}
-    </div>
+    </section>
   );
 }
