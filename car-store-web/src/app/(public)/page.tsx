@@ -1,3 +1,11 @@
-export default function Page() {
-  return <h1>Admin Dashboard</h1>;
+import { Hero } from '@/components/cars/Hero';
+import { CarGrid } from '@/components/cars/CarGrid';
+
+export default function HomePage() {
+  return (
+    <>
+      <Hero />
+      <CarGrid />
+    </>
+  );
 }
