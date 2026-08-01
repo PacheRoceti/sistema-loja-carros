@@ -31,8 +31,8 @@ class DashboardService {
     ]);
 
     const totalRevenue = soldCars.reduce(
-      (sum, car) => sum + car.price,
-      0
+      (sum, car) => sum + Number(car.price),
+      0,
     );
 
     return {

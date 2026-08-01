@@ -50,7 +50,7 @@ class SalesReportService {
 
       const entry = reportMap.get(period)!;
       entry.totalSoldCars += 1;
-      entry.totalRevenue += car.price;
+      entry.totalRevenue += Number(car.price);
     }
 
     return Array.from(reportMap.values()).sort((a, b) =>
