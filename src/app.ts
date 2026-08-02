@@ -8,6 +8,7 @@ import carRoutes from './routes/car.routes';
 import carImageRoutes from './routes/car-image.routes';
 import dashboardRoutes from './routes/dashboard.routes';
 import salesReportRoutes from './routes/sales-report.routes';
+import { errorHandler } from './middlewares/errorHandler';
 
 const app = express();
 
@@ -32,5 +33,8 @@ app.use('/login', authRoutes);
 app.use('/users', userRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/reports', salesReportRoutes);
+
+// Error handler (deve ser o último middleware)
+app.use(errorHandler);
 
 export { app };
