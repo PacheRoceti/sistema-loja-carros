@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { idParamSchema } from './common.schema';
 
 const fuelEnum = z.enum([
   'Gasolina',
@@ -37,9 +38,4 @@ export const createCarSchema = z.object({
 
 export const updateCarSchema = createCarSchema.partial();
 
-export const carIdParamSchema = z.object({
-  id: z.coerce
-    .number({ message: 'Número de Identificação deve ser um número' })
-    .int('Número de Identificação deve ser um número inteiro')
-    .positive('Número de Identificação inválido'),
-});
+export const carIdParamSchema = idParamSchema('id');
