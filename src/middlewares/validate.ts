@@ -19,7 +19,12 @@ export function validate(schema: ZodType, target: ValidateTarget = 'body') {
       });
     }
 
-    req[target] = result.data;
+    if (target === 'query') {
+      (req as any).validatedQuery = result.data;
+    } else {
+      req[target] = result.data;
+    }
+
     return next();
   };
 }
