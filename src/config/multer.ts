@@ -15,6 +15,10 @@ export const multerConfig = {
     },
   }),
 
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+
   fileFilter: (req: any, file: Express.Multer.File, callback: any) => {
     const allowedMimes = ['image/jpeg', 'image/png', 'image/jpg'];
 

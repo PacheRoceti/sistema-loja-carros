@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Prisma } from '@prisma/client';
+import { MulterError } from 'multer';
 import { AppError } from '../errors/AppError';
 
 export function errorHandler(
@@ -8,12 +9,17 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  // Erros de negócio conhecidos (ex: "Carro não encontrado")
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({ error: err.message });
   }
 
-  // Erros do Prisma (dado inválido, formato errado, etc.)
+  if (err instanceof MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({ error: 'Arquivo muito grande. Máximo permitido: 5MB.' });
+    }
+    return res.status(400).json({ error: 'Erro no upload do arquivo.' });
+  }
+
   if (
     err instanceof Prisma.PrismaClientValidationError ||
     err instanceof Prisma.PrismaClientKnownRequestError
@@ -24,7 +30,6 @@ export function errorHandler(
     });
   }
 
-  // Qualquer outro erro não esperado
   console.error('Erro não tratado:', err);
   return res.status(500).json({
     error: 'Erro interno do servidor.',
